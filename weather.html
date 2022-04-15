@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bala ji Weather</title>
+    <style>
+        #top{
+            text-align: center;
+            font-size: 35px;
+               margin: auto;
+               color: brown;
+               border-radius: 10px;
+               background-color: bisque;
+
+
+
+
+            
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
+        body{
+            background-image: url(https://cdn.wallpapersafari.com/73/49/zk2NMW.jpg);
+        }
+        iframe{
+            margin-top: 20px;
+            border-radius: 9px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        }
+        button{
+            background-color: blue;
+            border-radius: 4px;
+            color: antiquewhite;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            border: 0px;
+            height: 37px;
+            width: 300px;
+            font-size: 25px;
+
+
+
+        }
+
+        
+        #weather{
+            display: grid;
+            grid-template-columns: repeat(2 ,1fr);
+        }
+        #submit{
+            margin-left: 170px;
+            width: 200px;
+            color: rgb(236, 236, 238);
+            background-color: rgb(108, 128, 243);
+
+
+        }
+        #city{
+            height: 37px;
+            margin-left: 170px;
+            width: 300px;
+            
+            font-weight: bold;
+            font-weight: 10px;
+            text-align: center;
+            color: black;
+            border: 0px;
+            border-radius: 7px;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+
+
+
+        }
+        #get{
+            margin-left: 170px;
+            color: rgb(236, 236, 238);
+            background-color: rgb(108, 128, 243);
+
+        }
+        #container{
+            text-align: center;
+            font-size: 37px;
+            text-shadow: 10px;
+            font-weight: bolder;
+            
+
+        }
+            
+        
+    </style>
+</head>
+<body>
+    
+    <div id="top">
+        <h1>BALA  JI  Weather On Loaction Search</h1>
+        
+    </div>
+   <div id="search">
+    <button onclick="getWeather()" id="get">Get Weather on loaction</button>
+    <input type="text" id="city" placeholder="Enter City name" >
+    <button onclick="getData()" id="submit">wether Search</button>
+   </div>
+    
+   <div id="weather">
+    <div id="container"></div>
+    <div class="mapouter">
+        <div class="gmap_canvas">
+          <iframe
+            width="600"
+            height="500"
+            id="gmap_canvas"
+            frameborder="0"
+            scrolling="no"
+            marginheight="0"
+            marginwidth="0"
+            
+          ></iframe>
+        </div>
+      </div>
+   </div>
+    
+</body>
+</html>
+<script>
+  //src="https://maps.google.com/maps?q=delhi&t=&z=13&ie=UTF8&iwloc=&output=embed"
+//https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
+function getData() {
+  let city = document.getElementById("city").value;
+
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=5881c4a70f1f474bc5289105d70aa1b5`;
+
+  fetch(url)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      append(res);
+      console.log(res);
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function getDataLocation(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=5881c4a70f1f474bc5289105d70aa1b5`;
+
+  fetch(url)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      append(res);
+      console.log(res);
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+function append(data) {
+  let container = document.getElementById("container");
+  let map = document.getElementById("gmap_canvas");
+  container.innerHTML = null;
+
+  let city = document.createElement("p");
+  city.innerText = `City: ${data.name}`;
+  let sky=document.createElement("p");
+  sky.innerText=`Wind:-${data.wind.speed}`+" Km";
+
+  let min = document.createElement("p");
+  min.innerText = `Min temp: ${data.main.temp_min}`;
+
+  let max = document.createElement("p");
+  max.innerText = `Max temp: ${data.main.temp_max}`;
+
+  let current = document.createElement("p");
+  current.innerText = `Current Temp: ${data.main.temp}`;
+
+  let humidity = document.createElement("p");
+  humidity.innerText = `Humidity: ${data.main.humidity}`;
+
+  container.append(city,sky, min, max, current, humidity);
+  map.src = `https://maps.google.com/maps?q=${data.name}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+}
+
+function getWeather() {
+  navigator.geolocation.getCurrentPosition(success);
+
+  function success(position) {
+    let crd = position.coords;
+
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+
+    getDataLocation(crd.latitude, crd.longitude);
+  }
+}
+</script>
