@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #show_movies{
+            text-align: center;
+            font-size: 35px;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+
+        
+        }
+    </style>
+
+</head>
+<body>
+    <div>
+        <input type="text" placeholder="Enter Movies Name" id="movies">
+        <button onclick="getData()" id="button" >Search</button>
+         
+    </div>
+    <div id="show_movies">
+
+    </div>
+    
+    
+</body>
+</html>
+<script>
+function getData() {
+  let movies = document.getElementById("movies").value;
+
+  const url = `http://www.omdbapi.com/?s=${movies}&page=tt3896198&apikey=c980f154`;
+
+  fetch(url)
+    .then(function (res) {
+      return res.json();
+    })
+    .then(function (res) {
+      append(res);
+      console.log(res);
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+    
+}
+function append(data){
+    let show_movies =document.getElementById('show_movies');
+    
+    show_movies.innerHTML = null;
+     let name=document.createElement("p");
+     name.innerText=`Name : -${data.Search[0].Title}`
+     let image =document.createElement("img");
+
+     image.src=data.Search[0].Poster;
+     let relse=document.createElement("p");
+     relse.innerText=`Year : - ${data.Search[0].Year}`
+     //let relse=document.createElement("p");
+     
+     show_movies.append(name,relse);
+     show_movies.append(image);
+     
+
+
+
+}
+
+
+
+ 
+</script>
